@@ -4,7 +4,7 @@
    [compojure.route :as route]
    [compojure.core :refer [defroutes, POST]]
    [jute.core :as jute]
-   ))
+   [org.httpkit.client :as client]))
 
 (defonce server (atom nil))
 
@@ -31,8 +31,8 @@
     (reset! server (http-server/run-server all-routes {:port port}))
     (println (str "Runnning webserver at 0.0.0.0:" port))))
 
-;(run-server)
-;(stop-server)
+(run-server)
+(stop-server)
 
 (defn -main
   [& _args]

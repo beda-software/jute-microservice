@@ -1,4 +1,5 @@
 {:deps
  {http-kit/http-kit {:mvn/version "2.6.0"}
   compojure/compojure {:mvn/version "1.7.0"}
-  com.health-samurai/jute {:mvn/version "0.2.0-SNAPSHOT"}}}
+  com.health-samurai/jute {:mvn/version "0.2.0-SNAPSHOT"}}
+ :extra-paths ["test"]}
