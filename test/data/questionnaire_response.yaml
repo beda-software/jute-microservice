@@ -1,0 +1,26 @@
+resourceType: QuestionnaireResponse
+questionnaire: null
+item:
+  - linkId: patientId
+    answer:
+      - value:
+          string: test-patient
+  - linkId: patientName
+    answer:
+      - value:
+          string: Doe John
+  - linkId: height
+    answer:
+      - value:
+          integer: 180
+  - linkId: weight
+    answer:
+      - value:
+          integer: 75
+  - linkId: blood-pressure
+    item:
+      - linkId: blood-pressure-systolic-diastolic
+  - linkId: bmi
+    answer:
+      - value:
+          integer: 23.15

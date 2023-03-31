@@ -4,7 +4,7 @@
    [compojure.route :as route]
    [compojure.core :refer [defroutes, POST]]
    [jute.core :as jute]
-   [org.httpkit.client :as client]))
+   [clojure.data.json :as json]))
 
 (defonce server (atom nil))
 
@@ -14,12 +14,11 @@
     (reset! server nil)))
 
 (defn parse-jute-template [req]
-
-  (let [resources (:body req)]
-    (println "Template: " (get resources "template"))
+  (let [context (:body req)]
+    (println "Template: " context)
     {:status 200
      :headers {"Content-Type" "application/json"}
-     :body {"returned-template" (get resources "template" "test")}}))
+     :body context}))
 
 (defroutes all-routes
   (POST "/parse-template" [] parse-jute-template)

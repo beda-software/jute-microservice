@@ -1,0 +1,59 @@
+type: transaction
+entry:
+  - request:
+      url: /Observation
+      method: POST
+    resource:
+      code:
+        coding:
+          - code: 8302-2
+            system: http://loinc.org
+            display: Body height
+      value:
+        Quantity:
+          unit: cm
+          value: 180
+      status: final
+      subject:
+        id: 7260543d-5e31-4b3d-8e04-034e901ed241
+        display: Doe John
+        resourceType: Patient
+      resourceType: Observation
+  - request:
+      url: /Observation
+      method: POST
+    resource:
+      code:
+        coding:
+          - code: 29463-7
+            system: http://loinc.org
+            display: Body weight
+      value:
+        Quantity:
+          unit: kg
+          value: 75
+      status: final
+      subject:
+        id: 7260543d-5e31-4b3d-8e04-034e901ed241
+        display: Doe John
+        resourceType: Patient
+      resourceType: Observation
+  - request:
+      url: /Observation
+      method: POST
+    resource:
+      code:
+        coding:
+          - code: 39156-5
+            system: http://loinc.org
+            display: BMI
+      value:
+        Quantity:
+          unit: kg/m2
+          value: 23.15
+      status: final
+      subject:
+        id: 7260543d-5e31-4b3d-8e04-034e901ed241
+        display: Doe John
+        resourceType: Patient
+      resourceType: Observation

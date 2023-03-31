@@ -1,5 +1,7 @@
 {:deps
  {http-kit/http-kit {:mvn/version "2.6.0"}
   compojure/compojure {:mvn/version "1.7.0"}
-  com.health-samurai/jute {:mvn/version "0.2.0-SNAPSHOT"}}
+  com.health-samurai/jute {:mvn/version "0.2.0-SNAPSHOT"}
+  io.forward/yaml {:mvn/version "1.0.11"}
+  org.clojure/data.json {:mvn/version "2.4.0"}}
  :extra-paths ["test"]}
