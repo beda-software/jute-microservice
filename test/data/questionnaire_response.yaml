@@ -4,7 +4,7 @@ item:
   - linkId: patientId
     answer:
       - value:
-          string: test-patient
+          string: 7260543d-5e31-4b3d-8e04-034e901ed241
   - linkId: patientName
     answer:
       - value:

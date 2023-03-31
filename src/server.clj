@@ -14,11 +14,12 @@
     (reset! server nil)))
 
 (defn parse-jute-template [req]
-  (let [context (:body req)]
-    (println "Template: " context)
+  (let [context (json/read-str (:body req) :key-fn keyword)
+        template (:template context)
+        scope (:scope context)]
     {:status 200
      :headers {"Content-Type" "application/json"}
-     :body context}))
+     :body (jute/compile(template))}))
 
 (defroutes all-routes
   (POST "/parse-template" [] parse-jute-template)

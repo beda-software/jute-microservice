@@ -3,7 +3,8 @@
             [config-test]
             [org.httpkit.client :as client]
             [yaml.core :as yaml]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [jute.core :as jute]))
 
 (t/use-fixtures :once config-test/setup-tests)
 (t/deftest parse-template-valid
@@ -12,13 +13,22 @@
         questionnaire-response (yaml/from-file "test/data/questionnaire-response.yaml" true)
         result @(client/post "http://0.0.0.0:8090/parse-template"
                              {:headers {"Content-Type" "application/json"}
-                              :body (json/write-str {:mapper mapper
+                              :body (json/write-str {:template mapper
                                                      :scope {:QuestionnaireResponse questionnaire-response}})}
                              (fn [{:keys [status body]}]
                                (println "status is: " status)
                                body))
         expected (yaml/from-file "test/data/result_bundle.yaml" true)]
-    (println "Result is: " (json/read-str result :key-fn keyword))
+    (println "Result is: " result)
     (t/is (= expected result))))
 
 (t/run-tests)
+
+(yaml/from-file "test/data/mapper.yaml" true)
+(let [template (yaml/from-file "test/data/mapper.yaml" true)]
+  ((println "Template is: " template)
+   (jute/compile template)))
+
+{:fhirpath (fn
+             ([expr] (fhirpath.core/fp expr scope))
+             ([expr scope] (fhirpath.core/fp expr scope)))}
