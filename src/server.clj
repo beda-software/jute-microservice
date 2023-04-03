@@ -5,8 +5,7 @@
    [compojure.route :as route]
    [compojure.core :refer [defroutes, POST]]
    [jute.core :as jute]
-   [fhirpath.core]
-   [clojure.data.json :as json]))
+   [fhirpath.core]))
 
 (defonce server (atom nil))
 
@@ -15,16 +14,18 @@
     (@server :timeout 100)
     (reset! server nil)))
 
-(defn parse-jute-template [req]
-  (let [context (json/read-str (:body req) :key-fn keyword)
-        template (:template context)
-        scope (:scope context)]
+(defn parse-jute-template [request]
+  (let [{:keys [template context]} (:body request)
+        fhirpath-definition {:fhirpath (fn
+                                         ([expr] (fhirpath.core/fp expr context))
+                                         ([expr scope] (fhirpath.core/fp expr scope)))}
+        parsed-data ((jute/compile template) fhirpath-definition)
+        entries (as-> parsed-data r
+                  (get-in r [:body :entry])
+                  (remove nil? r))]
     {:status 200
-     :headers {"Content-Type" "application/json"}
-     :body (jute/compile template
-                         {:fhirpath (fn
-                                      ([expr] (fhirpath.core/fp expr scope))
-                                      ([expr scope] (fhirpath.core/fp expr scope)))})}))
+     :body (assoc-in parsed-data [:body :entry] entries)}))
+
 
 
 (defroutes all-routes
@@ -38,7 +39,6 @@
     (println (str "Runnning webserver at 0.0.0.0:" port))))
 
 (comment
-
   (run-server)
   (stop-server))
 :rcf

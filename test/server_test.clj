@@ -6,24 +6,21 @@
             [yaml.core :as yaml]
             [clojure.data.json :as json]
             [jute.core :as jute]
-            [fhirpath.core]
-            [fhirpath.core :as sut]))
+            [fhirpath.core]))
 
 (t/use-fixtures :once config-test/setup-tests)
+
 (t/deftest parse-template-valid
   (t/testing "Test jute/compile parse template correctly")
-  (let [mapper (yaml/from-file "test/data/mapper.yaml" true)
-        questionnaire-response (yaml/from-file "test/data/questionnaire-response.yaml" true)
-        result @(client/post "http://0.0.0.0:8090/parse-template"
-                             {:headers {"Content-Type" "application/json"}
-                              :body (json/write-str {:template mapper
-                                                     :scope {:QuestionnaireResponse questionnaire-response}})}
-                             (fn [{:keys [status body]}]
-                               (println "status is: " status)
-                               body))
+  (let [template (yaml/from-file "test/data/mapper.yaml" true)
+        context {:QuestionnaireResponse (yaml/from-file "test/data/questionnaire-response.yaml" true)}
+        {:keys [status body]} @(client/post "http://0.0.0.0:8090/parse-template"
+                                            {:headers {"Content-Type" "application/json"}
+                                             :body (json/write-str {:template template :context context})})
+
         expected (yaml/from-file "test/data/result_bundle.yaml" true)]
-    (println "Result is: " result)
-    (t/is (= expected result))))
+    (t/is (= status 200))
+    (t/is (= (json/write-str expected true) body))))
 
 (t/run-tests)
 
@@ -32,7 +29,10 @@
   (def context {:QuestionnaireResponse (yaml/from-file "test/data/questionnaire_response.yaml" true)})
   (def fhirpath-definition {:fhirpath (fn
                                         ([expr] (fhirpath.core/fp expr context))
-                                        ([expr scope] (fhirpath.core/fp expr scope))
-                                        )})
-  ((jute/compile template) fhirpath-definition))
-:rcf
+                                        ([expr scope] (fhirpath.core/fp expr scope)))})
+
+  (let [parsed-data ((jute/compile template) fhirpath-definition)
+        entries (as-> parsed-data result
+                  (get-in result [:body :entry])
+                  (remove nil? result))]
+    (assoc-in parsed-data [:body :entry] entries))) :rcf
