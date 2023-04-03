@@ -17,7 +17,7 @@
         {:keys [status body]} @(client/post "http://0.0.0.0:8090/parse-template"
                                             {:headers {"Content-Type" "application/json"}
                                              :body (json/write-str {:template template :context context})})
-        extracted (json/read-str (slurp body) :key-fn keyword)
+        extracted (json/read-str  body :key-fn keyword)
         expected (yaml/from-file "test/data/result_bundle.yaml" true)]
     (t/is (= status 200))
     (t/is (= expected extracted))))
