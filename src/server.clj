@@ -38,6 +38,7 @@
         parsed-data ((jute/compile template) fhirpath-definition)
         clean (remove-nil parsed-data)]
     {:status 200
+     :headers {"Content-Type" "application/json"}
      :body (json/write-str clean)}))
 
 (defroutes all-routes
