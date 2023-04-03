@@ -30,8 +30,9 @@
 (comment
   (def template (yaml/from-file "test/data/mapper.yaml" true))
   (def context {:QuestionnaireResponse (yaml/from-file "test/data/questionnaire_response.yaml" true)})
-  (def fhirpath-definition {:fhirpath (fn [expr] (fhirpath.core/fp expr context))})
-  (merge fhirpath-definition context)
-  ((jute/compile template) (merge fhirpath-definition context))
-  )
+  (def fhirpath-definition {:fhirpath (fn
+                                        ([expr] (fhirpath.core/fp expr context))
+                                        ;([expr scope] (fhirpath.core/fp expr scope))
+                                        )})
+  ((jute/compile template) fhirpath-definition))
 :rcf
