@@ -1,9 +1,11 @@
 (ns server
+  (:refer-clojure :exclude [compile])
   (:require
    [org.httpkit.server :as http-server]
    [compojure.route :as route]
    [compojure.core :refer [defroutes, POST]]
    [jute.core :as jute]
+   [fhirpath.core]
    [clojure.data.json :as json]))
 
 (defonce server (atom nil))
@@ -19,7 +21,11 @@
         scope (:scope context)]
     {:status 200
      :headers {"Content-Type" "application/json"}
-     :body (jute/compile(template))}))
+     :body (jute/compile template
+                         {:fhirpath (fn
+                                      ([expr] (fhirpath.core/fp expr scope))
+                                      ([expr scope] (fhirpath.core/fp expr scope)))})}))
+
 
 (defroutes all-routes
   (POST "/parse-template" [] parse-jute-template)
@@ -31,8 +37,11 @@
     (reset! server (http-server/run-server all-routes {:port port}))
     (println (str "Runnning webserver at 0.0.0.0:" port))))
 
-(run-server)
-(stop-server)
+(comment
+
+  (run-server)
+  (stop-server))
+:rcf
 
 (defn -main
   [& _args]
