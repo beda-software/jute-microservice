@@ -32,7 +32,7 @@
   (def context {:QuestionnaireResponse (yaml/from-file "test/data/questionnaire_response.yaml" true)})
   (def fhirpath-definition {:fhirpath (fn
                                         ([expr] (fhirpath.core/fp expr context))
-                                        ;([expr scope] (fhirpath.core/fp expr scope))
+                                        ([expr scope] (fhirpath.core/fp expr scope))
                                         )})
   ((jute/compile template) fhirpath-definition))
 :rcf
