@@ -5,6 +5,8 @@
    [compojure.route :as route]
    [compojure.core :refer [defroutes, POST]]
    [jute.core :as jute]
+   [clojure.data.json :as json]
+   [clojure.walk :as walk]
    [fhirpath.core]))
 
 (defonce server (atom nil))
@@ -14,17 +16,28 @@
     (@server :timeout 100)
     (reset! server nil)))
 
+(defn remove-nil [data]
+  (walk/prewalk
+    (fn [x]
+      (cond
+        (map? x)
+        (into {}
+              (remove (comp nil? val) x))
+        (vector? x)
+        (vec (remove nil? x))
+        :else x))
+    data))
+
 (defn parse-jute-template [request]
-  (let [{:keys [template context]} (:body request)
+  (let [body (json/read-str (slurp (:body request)) :key-fn keyword)
+        {:keys [template context]} body
         fhirpath-definition {:fhirpath (fn
                                          ([expr] (fhirpath.core/fp expr context))
                                          ([expr scope] (fhirpath.core/fp expr scope)))}
         parsed-data ((jute/compile template) fhirpath-definition)
-        entries (as-> parsed-data r
-                  (get-in r [:body :entry])
-                  (remove nil? r))]
+        clean (remove-nil parsed-data)]
     {:status 200
-     :body (assoc-in parsed-data [:body :entry] entries)}))
+     :body (json/write-str clean)}))
 
 
 
