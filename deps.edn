@@ -7,6 +7,9 @@
   io.forward/yaml {:mvn/version "1.0.11"}
   org.clojure/data.json {:mvn/version "2.4.0"}}
  :extra-paths ["test"]
- :aliases {:test {:extra-paths ["test/main/clojure"]
-                 :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
-                 :main-opts   ["-m" "kaocha.runner"]}}}
+ :aliases {:build {:extra-paths "."
+                   :deps {io.github.clojure/tools.build {:git/tag "v0.9.4" :git/sha "76b78fe"}}
+                   :ns-default build}
+           :test {:extra-paths ["test/main/clojure"]
+                  :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}
+                  :main-opts   ["-m" "kaocha.runner"]}}}

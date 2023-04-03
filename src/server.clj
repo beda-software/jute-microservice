@@ -7,7 +7,8 @@
    [jute.core :as jute]
    [clojure.data.json :as json]
    [clojure.walk :as walk]
-   [fhirpath.core]))
+   [fhirpath.core])
+  (:gen-class))
 
 (defonce server (atom nil))
 
@@ -39,8 +40,6 @@
     {:status 200
      :body (json/write-str clean)}))
 
-
-
 (defroutes all-routes
   (POST "/parse-template" [] parse-jute-template)
   (route/not-found "<p>Page not found.</p>"))
@@ -50,11 +49,6 @@
   (let [port (Integer/parseInt (or (System/getenv "APP_PORT") "8090"))]
     (reset! server (http-server/run-server all-routes {:port port}))
     (println (str "Runnning webserver at 0.0.0.0:" port))))
-
-(comment
-  (run-server)
-  (stop-server))
-:rcf
 
 (defn -main
   [& _args]

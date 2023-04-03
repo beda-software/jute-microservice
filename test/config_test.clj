@@ -4,7 +4,7 @@
 (defn setup-tests
   [tests]
   (try
-    (origin/-main)
+    (origin/run-server)
     (tests)
     (finally
       (origin/stop-server))))
