@@ -1,0 +1,7 @@
+$let:
+  author: $ Author
+$body:
+  id: $ author.id
+  resourceType: $ author.resourceType
+  display: $ author.name.0.given.0 + " " + author.name.0.family
+  fhirpathId: $ fhirpath("Author.id")

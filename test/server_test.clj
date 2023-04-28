@@ -22,6 +22,18 @@
     (t/is (= status 200))
     (t/is (= expected extracted))))
 
+(t/deftest parse-template-valid-with-fhirpath-and-context
+  (t/testing "Test jute/compile parse template correctly both fhirpath and context")
+  (let [template (yaml/from-file "test/data/author-template.yaml" true)
+        context {:Author (yaml/from-file "test/data/author.yaml" true)}
+        {:keys [status body]} @(client/post "http://0.0.0.0:8090/parse-template"
+                                            {:headers {"Content-Type" "application/json"}
+                                             :body (json/write-str {:template template :context context})})
+        extracted (json/read-str  body :key-fn keyword)
+        expected (yaml/from-file "test/data/author_result.yaml" true)]
+    (t/is (= status 200))
+    (t/is (= expected extracted))))
+
 (t/run-tests)
 
 (comment
@@ -35,4 +47,12 @@
         entries (as-> parsed-data result
                   (get-in result [:body :entry])
                   (remove nil? result))]
-    (assoc-in parsed-data [:body :entry] entries))) :rcf
+    (assoc-in parsed-data [:body :entry] entries))
+
+  (def author-template (yaml/from-file "test/data/author-template.yaml" true))
+  (def author-context {:Author (yaml/from-file "test/data/author.yaml" true)})
+  (def fhirpath-definition {:fhirpath (fn
+                                        ([expr] (fhirpath.core/fp expr author-context))
+                                        ([expr scope] (fhirpath.core/fp expr scope)))})
+  ((jute/compile author-template) (merge author-context fhirpath-definition))
+  (json/write-str {:template author-template :context author-context})) :rcf

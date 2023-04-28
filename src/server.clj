@@ -35,7 +35,7 @@
         fhirpath-definition {:fhirpath (fn
                                          ([expr] (fhirpath.core/fp expr context))
                                          ([expr scope] (fhirpath.core/fp expr scope)))}
-        parsed-data ((jute/compile template) fhirpath-definition)
+        parsed-data ((jute/compile template) (merge fhirpath-definition context))
         clean (remove-nil parsed-data)]
     {:status 200
      :headers {"Content-Type" "application/json"}
