@@ -25,7 +25,8 @@
 (t/deftest parse-template-valid-with-fhirpath-and-context
   (t/testing "Test jute/compile parse template correctly both fhirpath and context")
   (let [template (yaml/from-file "test/data/author-template.yaml" true)
-        context {:Author (yaml/from-file "test/data/author.yaml" true)}
+        context {:Author (yaml/from-file "test/data/author.yaml" true)
+                 :QuestionnaireResponse (yaml/from-file "test/data/questionnaire_response.yaml" true)}
         {:keys [status body]} @(client/post "http://0.0.0.0:8090/parse-template"
                                             {:headers {"Content-Type" "application/json"}
                                              :body (json/write-str {:template template :context context})})
@@ -50,7 +51,8 @@
     (assoc-in parsed-data [:body :entry] entries))
 
   (def author-template (yaml/from-file "test/data/author-template.yaml" true))
-  (def author-context {:Author (yaml/from-file "test/data/author.yaml" true)})
+  (def author-context {:Author (yaml/from-file "test/data/author.yaml" true)
+                       :QuestionnaireResponse (yaml/from-file "test/data/questionnaire_response.yaml" true)})
   (def fhirpath-definition {:fhirpath (fn
                                         ([expr] (fhirpath.core/fp expr author-context))
                                         ([expr scope] (fhirpath.core/fp expr scope)))})

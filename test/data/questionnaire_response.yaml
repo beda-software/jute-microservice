@@ -1,5 +1,8 @@
 resourceType: QuestionnaireResponse
+id: "2234"
 questionnaire: null
+meta:
+  versionId: "1"
 item:
   - linkId: patientId
     answer:

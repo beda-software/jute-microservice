@@ -1,7 +1,10 @@
 $let:
   author: $ Author
+  qrId: $ fhirpath("QuestionnaireResponse.id")
+  qrVersion: $ fhirpath("QuestionnaireResponse.meta.versionId")
 $body:
   id: $ author.id
   resourceType: $ author.resourceType
   display: $ author.name.0.given.0 + " " + author.name.0.family
   fhirpathId: $ fhirpath("Author.id")
+  reference: $ "QuestionnaireResponse/" + qrId + "/_history/" + qrVersion
