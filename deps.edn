@@ -5,7 +5,9 @@
   com.health-samurai/fhirpath {:git/url "https://github.com/HealthSamurai/fhirpath.clj.git"
                                :git/sha "97dea9575dd1d2fa7be13b55bb1ecd3a3079ede7"}
   io.forward/yaml {:mvn/version "1.0.11"}
-  org.clojure/data.json {:mvn/version "2.4.0"}}
+  org.clojure/data.json {:mvn/version "2.4.0"}
+  ring-cors/ring-cors {:mvn/version "0.1.13"}
+  }
  :extra-paths ["test"]
  :aliases {:build {:extra-paths "."
                    :deps {io.github.clojure/tools.build {:git/tag "v0.9.4" :git/sha "76b78fe"}}
