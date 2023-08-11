@@ -43,22 +43,29 @@
      :body (json/write-str clean)}))
 
 (defroutes all-routes
-  (GET "/health-check" [] {:status 200})
+  (GET "/health-check" [] (fn [_r] {:status 200 :body "ok"}))
   (POST "/parse-template" [] parse-jute-template)
   (route/not-found "<p>Page not found.</p>"))
 
-(def app
-  (-> all-routes
-      (wrap-cors
-        :access-control-allow-origin [:*]
-        :access-control-allow-methods [:get :put :post :delete])))
+(def handler
+  (wrap-cors
+    all-routes
+    :access-control-allow-origin #".*"
+    :access-control-allow-methods [:get :put :post :delete]))
 
 (defn run-server
   []
   (let [port (Integer/parseInt (or (System/getenv "APP_PORT") "8090"))]
-    (reset! server (http-server/run-server #'app {:port port})) ;
+    (reset! server (http-server/run-server handler {:port port})) ;
     (println (str "Runnning webserver at 0.0.0.0:" port))))
 
 (defn -main
   [& _args]
   (run-server))
+
+(comment
+  (do
+    (@server)
+    (run-server))
+
+  )
