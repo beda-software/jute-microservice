@@ -1,5 +1,5 @@
-FROM eclipse-temurin:25-jre
-RUN useradd --system --uid 10001 appuser
+FROM eclipse-temurin:25-jre-alpine
+RUN adduser -S -u 10001 appuser
 WORKDIR /app
 COPY target/jute-microservice-standalone.jar jute-microservice-standalone.jar
 USER appuser
